@@ -1,5 +1,7 @@
 package lexer
 
+import "interpreter/token"
+
 type Lexer struct {
 	input        string
 	position     int
@@ -9,6 +11,7 @@ type Lexer struct {
 
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
+	l.readchar()
 	return l
 }
 
@@ -20,4 +23,18 @@ func (l *Lexer) readchar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
+}
+
+func (l *Lexer) NextToken() token.Token {
+	var tok token.Token
+
+	switch l.ch {
+	case '=':
+		tok = newToken(token.ASSIGN, l.ch)
+	}
+	return tok
+}
+
+func newToken(tokenType token.TokenType, ch byte) token.Token {
+	return token.Token{Type: tokenType, Literal: string(ch)}
 }
